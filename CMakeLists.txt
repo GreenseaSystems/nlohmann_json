@@ -6,6 +6,90 @@ cmake_minimum_required(VERSION 3.5...4.0)
 ##
 project(nlohmann_json VERSION 3.12.0 LANGUAGES CXX)
 
+if(BUILD_TARGET STREQUAL "GSIQ")
+    message("Beginning a GSIQ package build")
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Package wrapper for the nlohmann JSON library")
+
+    ######################################
+    # Cmake path
+
+    set(cmake_dir "/usr/local/share/cmake/gss_cmake")
+    include(${cmake_dir}/gss_paths-config.cmake)
+
+    set(gss_license ${cmake_dir}/license.txt)
+    set(CMAKE_MODULE_PATH ${cmake_dir}/cmake-modules)
+
+    ######################################
+    # Get the .hpp file and declare a library
+
+    # Path to the all-in-one .hpp file
+    set(JSON_LIB "${CMAKE_CURRENT_SOURCE_DIR}/single_include/nlohmann/json.hpp")
+
+    message(STATUS "Adding ${JSON_LIB}")
+    add_library(${PROJECT_NAME} INTERFACE
+        ${JSON_LIB}
+    )
+
+    install(FILES
+        ${JSON_LIB}
+        DESTINATION include/nlohmann
+    )
+
+    ######################################
+    # Set up discovery artifacts for external packages
+
+    include(CMakePackageConfigHelpers)
+
+    set(JSON_CONFIG_IN "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake.in")
+    set(JSON_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake")
+    set(JSON_CONFIG_VERSION "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
+
+    # These two variables are copied from the upstream cmake file, and are used
+    # for package discovery in configured cmake files.
+    set(NLOHMANN_JSON_TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+    if (NOT DEFINED NLOHMANN_JSON_TARGET_NAME)
+        # Allow overriding the target name when using FetchContent / add_subdirectory.
+        set(NLOHMANN_JSON_TARGET_NAME ${PROJECT_NAME})
+    endif()
+
+    configure_package_config_file(
+        "${JSON_CONFIG_IN}"
+        "${JSON_CONFIG}"
+        INSTALL_DESTINATION lib/cmake/nlohmann_json
+    )
+
+    write_basic_package_version_file(
+        "${JSON_CONFIG_VERSION}"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    # Install the two generated files
+    install(FILES
+        ${JSON_CONFIG}
+        ${JSON_CONFIG_VERSION}
+        DESTINATION lib/cmake/nlohmann_json
+    )
+
+    # Define a targets file too
+    install(TARGETS nlohmann_json EXPORT nlohmann_jsonTargets)
+
+    install(
+        EXPORT nlohmann_jsonTargets
+        FILE "${NLOHMANN_JSON_TARGETS_EXPORT_NAME}.cmake"
+        NAMESPACE nlohmann_json::
+        DESTINATION lib/cmake/nlohmann_json
+    )
+
+    ######################################
+    # Call the standard CPack config
+
+    include(${cmake_dir}/gss_cpack-config.cmake)
+
+    return()
+endif()
+
+
 ##
 ## MAIN_PROJECT CHECK
 ## determine if nlohmann_json is built as a subproject (using add_subdirectory) or if it is the main project

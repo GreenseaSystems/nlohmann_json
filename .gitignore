@@ -49,3 +49,4 @@ MODULE.bazel.lock
 # GSIQ-specific ignores
 nlohmann_json_version.h
 *.deb
+.github

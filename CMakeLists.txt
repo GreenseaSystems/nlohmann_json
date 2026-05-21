@@ -25,7 +25,7 @@ if(BUILD_TARGET STREQUAL "GSIQ")
     # Path to the all-in-one .hpp file
     set(JSON_LIB "${CMAKE_CURRENT_SOURCE_DIR}/single_include/nlohmann/json.hpp")
 
-    add_library(${PROJECT_NAME} INTERFACE${JSON_LIB})
+    add_library(${PROJECT_NAME} INTERFACE ${JSON_LIB})
 
     install(FILES
         ${JSON_LIB}

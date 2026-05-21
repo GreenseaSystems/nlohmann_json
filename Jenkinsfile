@@ -1,2 +1,2 @@
 // https://github.com/GreenseaSystems/gss_jenkins
-defaultPipeline(dockerContainer: 'gss_build:6.3.1')
+defaultPipeline(platforms: 'ubuntu_jammy_x86_64')

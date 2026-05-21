@@ -50,3 +50,4 @@ MODULE.bazel.lock
 nlohmann_json_version.h
 *.deb
 .github
+tests/

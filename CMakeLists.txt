@@ -25,10 +25,7 @@ if(BUILD_TARGET STREQUAL "GSIQ")
     # Path to the all-in-one .hpp file
     set(JSON_LIB "${CMAKE_CURRENT_SOURCE_DIR}/single_include/nlohmann/json.hpp")
 
-    message(STATUS "Adding ${JSON_LIB}")
-    add_library(${PROJECT_NAME} INTERFACE
-        ${JSON_LIB}
-    )
+    add_library(${PROJECT_NAME} INTERFACE${JSON_LIB})
 
     install(FILES
         ${JSON_LIB}
@@ -77,7 +74,7 @@ if(BUILD_TARGET STREQUAL "GSIQ")
     install(
         EXPORT nlohmann_jsonTargets
         FILE "${NLOHMANN_JSON_TARGETS_EXPORT_NAME}.cmake"
-        NAMESPACE nlohmann_json::
+        NAMESPACE gss::
         DESTINATION lib/cmake/nlohmann_json
     )
 

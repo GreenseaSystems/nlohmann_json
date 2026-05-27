@@ -45,3 +45,9 @@ nlohmann_json.spdx
 
 # Bazel-related
 MODULE.bazel.lock
+
+# GSIQ-specific ignores
+nlohmann_json_version.h
+*.deb
+.github
+tests/
